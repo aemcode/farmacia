@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Item de Venda</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:panel header="Item de Venda - Listagem">
+                <p:dataTable emptyMessage="Nenhum registro encontrado."
+                             paginator="true">
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgItemVenda').show();" />
+                    </f:facet>
+
+                    <p:column headerText="Venda">
+                        <h:outputText value="#{itemVenda.venda.id}" />
+                    </p:column>
+                    
+                    <p:column headerText="Produto">
+                        <h:outputText value="#{itemVenda.produto.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Quantidade">
+                        <h:outputText value="#{itemVenda.quantidade}" />
+                    </p:column>
+
+                    <p:column headerText="Valor">
+                        <h:outputText value="#{funcionario.valor}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{itemVendaBean.excluir}"
+                                         update=":mensagem :formListItemVenda:dtbItemVenda">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?"
+                                       icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{estoque}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{estoqueBean.editar}"
+                                         update=":mensagem :formCadastroItemVenda:pnlCadastroItemVenda" oncomplete="PF('dlgItemVenda').show();">
+                            <f:attribute name="registroSelecionado" value="#{estoque}" />
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+                
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Item de Venda - Cadastro" widgetVar="dlgItemVenda"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form>
+                <h:panelGrid columns="2">
+
+                    <p:outputLabel for="mnuMatriz" value="Matriz:" />
+                    <p:selectOneMenu id="mnuMatriz" value="#{itemVendaBean.funcionario.matriz}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'MATRIZ' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma matriz" />
+                        <f:selectItems value="#{itemVendaBean.matrizes}" var="matriz" 
+                                       itemValue="#{matriz}" itemLabel="#{matriz.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuFilial" value="Filial:" />
+                    <p:selectOneMenu id="mnuFilial" value="#{itemVendaBean.filial.filial}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'FILIAL' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma filial" />
+                        <f:selectItems value="#{itemVendaBean.filiais}" var="filial" 
+                                       itemValue="#{filial}" itemLabel="#{filial.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuVenda" value="Venda:" />
+                    <p:selectOneMenu id="mnuVenda" value="#{itemVendaBean.venda.id}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'VENDA' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione um venda" />
+                        <f:selectItems value="#{itemVendaBean.vendas}" var="venda" 
+                                       itemValue="#{venda}" itemLabel="#{venda.id}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuProduto" value="Produto:" />
+                    <p:selectOneMenu id="mnuProduto" value="#{itemVendaBean.produto.produto}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'PRODUTO' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione um produto" />
+                        <f:selectItems value="#{itemVendaBean.produtos}" var="produto" 
+                                       itemValue="#{produto}" itemLabel="#{produto.descricao}"/>
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel for="intQuantidade" value="Quantidade:" />
+                    <p:inputMask id="intQuantidade" value="#{itemVendaBean.itemVenda.quantidade}" mask="9?999999999999999" 
+                                 required="true" requiredMessage="O campo 'QUANTIDADE' é obrigatório" />
+
+                    <p:outputLabel for="curValor" value="Valor:" />
+                    <p:inputNumber id="curValor" value="#{itemVendaBean.itemVenda.valor}" decimalSeparator="," thousandSeparator="."
+                                   required="true" requiredMessage="O campo 'VALOR' é obrigatório"> 
+                    </p:inputNumber>
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">  
+                    <p:commandButton value="Salvar" />
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgItemVenda').hide();" />
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputScript library="js" name="locale.js" />
+        <title>Funcionario</title>
+    </h:head>
+    <h:body>
+        
+        <p:growl id="mensagem" />
+        
+        <h:form id="formListFuncionario">
+            <p:panel header="Funcionario - Listagem">
+                <p:dataTable id="dtbFuncionario" emptyMessage="Nenhum registro encontrado." paginator="true" value="#{funcionarioBean.funcionarios}" var="funcionario" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+                    
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgFuncionario').show();" 
+                                         actionListener="#{funcionarioBean.novo}" update=":formCadastroFuncionario:pnlCadastroFuncionario" />
+                    </f:facet>
+
+                    <p:column headerText="Matriz">
+                        <h:outputText value="#{funcionario.matriz.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Filial">
+                        <h:outputText value="#{funcionario.filial.nome}" />
+                    </p:column>
+
+                     <p:column headerText="Nome">
+                         <h:outputText value="#{funcionario.pessoa.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Data de admissão">
+                        <h:outputText value="#{funcionario.dataAdmissao}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{funcionarioBean.excluir}"
+                                         update=":mensagem :formListFuncionario:dtbFuncionario">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?"
+                                       icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{funcionario}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{funcionarioBean.editar}"
+                                         update=":formCadastroFuncionario:pnlCadastroFuncionario" oncomplete="PF('dlgFuncionario').show();">
+                            <f:attribute name="registroSelecionado" value="#{funcionario}" />
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
+                
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Funcionario - Cadastro" widgetVar="dlgFuncionario"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            
+            <h:form id="formCadastroFuncionario">
+                <h:panelGrid id="pnlCadastroFuncionario" columns="2">
+
+                    <p:outputLabel for="mnuMatriz" value="Matriz:" />
+                    <p:selectOneMenu id="mnuMatriz" filter="true" required="true" requiredMessage="O campo 'MATRIZ' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{funcionarioBean.funcionario.matriz}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma matriz" itemValue="#{funcionarioBean.funcionario.matriz.nome}" />
+                        <f:selectItems value="#{funcionarioBean.matrizes}" var="matriz"
+                                       itemValue="#{matriz}" itemLabel="#{matriz.nome}" />
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel for="mnuFilial" value="Filial:" />
+                    <p:selectOneMenu id="mnuFilial" filter="true" required="true" requiredMessage="O campo 'FILIAL' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{funcionarioBean.funcionario.filial}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma filial" />
+                        <f:selectItems value="#{funcionarioBean.filiais}" var="filial"
+                                       itemValue="#{filial}" itemLabel="#{filial.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuPessoa" value="Pessoa:" />
+                    <p:selectOneMenu id="mnuPessoa" filter="true" required="true" requiredMessage="O campo 'PESSOA' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{funcionarioBean.funcionario.pessoa}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma pessoa" />
+                        <f:selectItems value="#{funcionarioBean.pessoas}" var="pessoa"
+                                       itemValue="#{pessoa}" itemLabel="#{pessoa.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="dteDataAdmissao" value="Data de Admissao" />
+                    <p:calendar id="dteDataAdmissao" value="#{funcionarioBean.funcionario.dataAdmissao}" locale="pt_BR" pattern="dd/MM/yyyy" mask="true" 
+                                required="true" requiredMessage="O campo 'DATA DE ADMISSAO' é obrigatório" />
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{funcionarioBean.salvar}"
+                                     update=":mensagem :formCadastroFuncionario:pnlCadastroFuncionario :formListFuncionario:dtbFuncionario"/>
+
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgFuncionario').hide();" 
+                                     update="formCadastroFuncionario:pnlCadastroFuncionario" process="@this" actionListener="#{funcionarioBean.resetInput()}" />
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

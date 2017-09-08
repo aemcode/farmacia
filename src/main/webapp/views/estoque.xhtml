@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputScript library="js" name="locale.js" />
+        <title>Estoque</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:panel header="Estoque - Listagem">
+                <p:dataTable emptyMessage="Nenhum registro encontrado."
+                             paginator="true">
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgEstoque').show();" />
+                    </f:facet>
+
+                    <p:column headerText="Matriz">
+                        <h:outputText value="#{estoque.matriz.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Filial">
+                        <h:outputText value="#{estoque.filial.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Fornecedor">
+                        <h:outputText value="#{estoque.parceiroNegocio.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Produto">
+                        <h:outputText value="#{estoque.produto.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Quantidade">
+                        <h:outputText value="#{estoque.quantidade}" />
+                    </p:column>
+
+                    <p:column headerText="Lote">
+                        <h:outputText value="#{estoque.lote}" />
+                    </p:column>
+
+                    <p:column headerText="Data de validade">
+                        <h:outputText value="#{estoque.dataValidade}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{estoqueBean.excluir}"
+                                         update=":mensagem :formListEstoque:dtbEstoque">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?"
+                                       icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{estoque}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{estoqueBean.editar}"
+                                         update=":mensagem :formCadastroEstoque:pnlCadastroEstoque" oncomplete="PF('dlgEstoque').show();">
+                            <f:attribute name="registroSelecionado" value="#{estoque}" />
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Estoque - Cadastro" widgetVar="dlgEstoque"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form>
+                <h:panelGrid columns="2">
+
+                    <p:outputLabel for="mnuMatriz" value="Matriz:" />
+                    <p:selectOneMenu id="mnuMatriz" value="#{estoqueBean.estoque.matriz}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'MATRIZ' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma matriz" />
+                        <f:selectItems value="#{estoqueBean.matrizes}" var="matriz" 
+                                       itemValue="#{matriz}" itemLabel="#{matriz.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuFilial" value="Filial:" />
+                    <p:selectOneMenu id="mnuFilial" value="#{estoqueBean.filial.filial}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'FILIAL' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma filial" />
+                        <f:selectItems value="#{estoqueBean.filiais}" var="filial" 
+                                       itemValue="#{filial}" itemLabel="#{filial.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuParceiroNegocio" value="Fornecedor:" />
+                    <p:selectOneMenu id="mnuParceiroNegocio" value="#{estoque.parceiroNegocio.parceiroNegocio_id}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'FORNECEDOR' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione um fornecedor" />
+                        <f:selectItems value="#{estoque.parceiroNegociosList}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuProduto" value="Produto:" />
+                    <p:selectOneMenu id="mnuProduto" value="#{estoque.produto.produto_id}" filter="true" converter="omnifaces.SelectItemsConverter" 
+                                     required="true" requiredMessage="O campo 'PRODUTO' é obrigatório">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione um produto" />
+                        <f:selectItems value="#{estoque.produtoList}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="intQuantidade" value="Quantidade:" />
+                    <p:inputMask id="intQuantidade" value="#{maskView.date}" mask="9?999999999999999" 
+                                     required="true" requiredMessage="O campo 'QUANTIDADE' é obrigatório" />
+
+                    <p:outputLabel for="curValor" value="Valor:" />
+                    <p:inputNumber id="curValor" value="#{estoque.valor}" decimalSeparator="," thousandSeparator="."
+                                     required="true" requiredMessage="O campo 'VALOR' é obrigatório"> 
+                    </p:inputNumber>
+
+                    <p:outputLabel for="dteDataValidade" value="Data de Validade:" />
+                    <p:calendar id="dteDataValidade" value="#{estoque.dataValidade}" locale="pt_BR" pattern="dd/MM/yyyy" mask="true"
+                                     required="true" requiredMessage="O campo 'DATA DE VALIDADE' é obrigatório" />
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{estoqueBean.salvar}"
+                                     update=":mensagem :formCadastroEstoque:pnlCadastroEstoque :formListEstoque:dtbEstoque"/>
+
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgEstoque').hide();" 
+                                     update="formCadastroEstoque:pnlCadastroEstoque" process="@this" actionListener="#{estoqueBean.resetInput()}" />
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

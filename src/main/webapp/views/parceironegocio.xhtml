@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Parceiro de Negocios</title>
+    </h:head>
+    <h:body>
+        
+        <p:growl id="mensagem" />
+
+        <h:form id="formListParceiroNegocio">
+
+            <p:panel header="Parceiro de Negocios - Listagem">
+                <p:dataTable id="dtbParceiroNegocio" emptyMessage="Nenhum registro encontrado." paginator="true" value="#{parceiroNegocioBean.parceiroNegocios}" var="parceiroNegocio" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+                    
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgParceiroNegocio').show();" actionListener="#{parceiroNegocioBean.novo}" update=":formCadastroParceiroNegocio:pnlCadastroParceiroNegocio" />
+                    </f:facet>
+
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{parceiroNegocio.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Pessoa Física ou Jurídica">
+                        <h:outputText value="#{parceiroNegocio.pessoaFisicaOuJuridica}" />
+                    </p:column>
+
+                    <p:column headerText="Cpf/Cnpj">
+                        <h:outputText value="#{parceiroNegocio.cpfCnpj}" />
+                    </p:column>
+
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{parceiroNegocio.tipo}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">   
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{parceiroNegocioBean.excluir}"
+                                         update=":mensagem :formListParceiroNegocio:dtbParceiroNegocio">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{parceiroNegocio}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil" actionListener="#{parceiroNegocioBean.editar}"
+                                         update=":formCadastroParceiroNegocio:pnlCadastroParceiroNegocio" oncomplete="PF('dlgParceiroNegocio').show();">
+                            <f:attribute name="registroSelecionado" value="#{parceiroNegocio}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Parceiro de Negócios - Cadastro" widgetVar="dlgParceiroNegocio"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastroParceiroNegocio">
+                <h:panelGrid id="pnlCadastroParceiroNegocio" columns="2">
+                    <p:outputLabel for="txtNome" value="Nome:" />
+                    <p:inputText id="txtNome" value="#{parceiroNegocioBean.parceiroNegocio.nome}" maxlength="60" size="40" 
+                                 required="true" requiredMessage="O campo 'NOME' é obrigatório"  />
+                    
+                    <p:outputLabel for="rdoPessoaFisicaOuJuridica" value="Fisica Ou Juridica:" />
+                    <p:selectOneRadio id="rdoPessoaFisicaOuJuridica" value="#{parceiroNegocioBean.parceiroNegocio.pessoaFisicaOuJuridica}"
+                                      required="true" requiredMessage="O campo 'PESSOA FISICA OU JURIDICA' é obrigatório">
+                        <f:selectItem itemValue="F" itemLabel="Fisica" />
+                        <f:selectItem itemValue="J" itemLabel="Jurídica" />
+                    </p:selectOneRadio>
+                    
+                    <p:outputLabel for="txtCpfCnpj" value="Cpf/Cnpj:" />
+                    <p:inputText id="txtCpfCnpj" value="#{parceiroNegocioBean.parceiroNegocio.cpfCnpj}" maxlength="20" size="20" 
+                                 required="true" requiredMessage="O campo 'CNPJ/CPF' é obrigatório"/>
+
+                    <p:outputLabel for="rdoTipo" value="Tipo:" />
+                    <p:selectOneRadio id="rdoTipo" value="#{parceiroNegocioBean.parceiroNegocio.tipo}" 
+                                      required="true" requiredMessage="O campo 'TIPO' é obrigatório">
+                        <f:selectItem itemValue="C" itemLabel="Cliente" />
+                        <f:selectItem itemValue="F" itemLabel="Fornecedor" />
+                        <f:selectItem itemValue="A" itemLabel="Ambos" />
+                    </p:selectOneRadio> 
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{parceiroNegocioBean.salvar()}"
+                                     update=":mensagem :formCadastroParceiroNegocio:pnlCadastroParceiroNegocio :formListParceiroNegocio:dtbParceiroNegocio"/>
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgParceiroNegocio').hide();" 
+                                     update="formCadastroParceiroNegocio:pnlCadastroParceiroNegocio" process="@this" actionListener="#{parceiroNegocioBean.resetInput()}" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

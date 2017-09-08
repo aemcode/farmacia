@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Matriz</title>
+    </h:head>
+    <h:body>
+
+        <p:growl id="mensagem" />
+
+        <h:form id="formListMatriz">
+
+            <p:panel header="Matriz - Listagem">
+                <p:dataTable id="dtbMatriz" emptyMessage="Nenhum registro encontrado." paginator="true" value="#{matrizBean.matrizes}" var="matriz" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgMatriz').show();" 
+                                         actionListener="#{matrizBean.novo()}" update=":formCadastroMatriz:pnlCadastroMatriz" />
+                    </f:facet>
+
+                    <p:column headerText="Nome" sortBy="#{matriz.nome}" filterBy="#{matriz.nome}">
+                        <h:outputText value="#{matriz.nome}" />
+                    </p:column>
+                    
+                    <p:column headerText="cnpj" sortBy="#{matriz.cnpj}" filterBy="#{matriz.cnpj}">
+                        <h:outputText value="#{matriz.cnpj}" />
+                    </p:column>
+
+                    <p:column headerText="Rua">
+                        <h:outputText value="#{matriz.rua}" />
+                    </p:column>
+
+                    <p:column headerText="Numero">
+                        <h:outputText value="#{matriz.numero}" />
+                    </p:column>
+
+                    <p:column headerText="Complemento">
+                        <h:outputText value="#{matriz.complemento}" />
+                    </p:column>
+
+                    <p:column headerText="Bairro">
+                        <h:outputText value="#{matriz.bairro}" />
+                    </p:column>
+
+                    <p:column headerText="Cidade">
+                        <h:outputText value="#{matriz.cidade.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Cep">
+                        <h:outputText value="#{matriz.cep}" />
+                    </p:column>
+
+                    <p:column headerText="Telefone">
+                        <h:outputText value="#{matriz.telefone}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{matrizBean.excluir}"
+                                         update=":mensagem :formListMatriz:dtbMatriz">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?"
+                                       icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{matriz}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{matrizBean.editar}"
+                                         update=":formCadastroMatriz:pnlCadastroMatriz" oncomplete="PF('dlgMatriz').show();">
+                            <f:attribute name="registroSelecionado" value="#{matriz}" />
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
+                
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Matriz - Cadastro" widgetVar="dlgMatriz"
+                  draggable="false" resizable="false" modal="true" closable="false">
+
+            <h:form id="formCadastroMatriz">
+                <h:panelGrid id="pnlCadastroMatriz" columns="2">
+
+                    <p:outputLabel for="txtNome" value="Nome:" />
+                    <p:inputText id="txtNome" value="#{matrizBean.matriz.nome}" maxlength="60" size="30" required="true"
+                                 requiredMessage="O campo 'Nome' é obrigatório" />
+
+                    <p:outputLabel for="txtCnpj" value="Cnpj:" />
+                    <p:inputMask id="txtCnpj" value="#{matrizBean.matriz.cnpj}" mask="99.999.999/9999-99" size="18"
+                                 required="true" requiredMessage="O campo 'CNPJ' é obrigatório" />
+
+                    <p:outputLabel for="txtRua" value="Rua:" />
+                    <p:inputText id="txtRua" value="#{matrizBean.matriz.rua}" maxlength="80" size="60" 
+                                 required="true" requiredMessage="O campo 'RUA' é obrigatório" />
+                    
+                    <p:outputLabel for="intNumero" value="Numero:" />
+                    <p:inputMask id="intNumero" value="#{matrizBean.matriz.numero}" mask="9?9999" size="5"
+                                 required="true" requiredMessage="O campo 'NUMERO' é obrigatório" />
+
+                    <p:outputLabel for="txtComplemento" value="Complemento:" />
+                    <p:inputText id="txtComplemento" value="#{matrizBean.matriz.complemento}" maxlength="40" size="30" />
+
+                    <p:outputLabel for="txtBairro" value="Bairro:" />
+                    <p:inputText id="txtBairro" value="#{matrizBean.matriz.bairro}" maxlength="50" size="30" 
+                                 required="true" requiredMessage="O campo 'BAIRRO' é obrigatório" />
+                    
+                    <p:outputLabel for="mnuEstado" value="Estado:" />
+                    <p:selectOneMenu id="mnuEstado" filter="true" converter="omnifaces.SelectItemsConverter" value="#{matrizBean.estado}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione um estado" />
+                        <f:selectItems value="#{matrizBean.estados}" var="estado"
+                                       itemValue="#{estado}" itemLabel="#{estado.nome} - #{estado.sigla}" />
+                        <p:ajax listener="#{matrizBean.fillFields}" update=":formCadastroMatriz:mnuCidade" />
+                    </p:selectOneMenu>
+                   
+                    <p:outputLabel for="mnuCidade" value="Cidade:" />
+                    <p:selectOneMenu id="mnuCidade" filter="true" required="true" requiredMessage="O campo 'CIDADE' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{matrizBean.matriz.cidade}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma cidade" />
+                        <f:selectItems value="#{matrizBean.cidades}" var="cidade"
+                                       itemValue="#{cidade.id}" itemLabel="#{cidade.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="txtCep" value="Cep:" />
+                    <p:inputMask id="txtCep" value="#{matrizBean.matriz.cep}" mask="99999-999" size="10"
+                                 required="true" requiredMessage="O campo 'CEP' é obrigatório" />
+
+                    <p:outputLabel for="txtTelefone" value="Telefone:" />
+                    <p:inputMask id="txtTelefone" value="#{matrizBean.matriz.telefone}" mask="(99) 9999-9999" />
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{matrizBean.salvar()}"
+                                     update=":mensagem :formCadastroMatriz:pnlCadastroMatriz :formListMatriz:dtbMatriz"/>
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgMatriz').hide();" 
+                                     update="formCadastroMatriz:pnlCadastroMatriz" process="@this" actionListener="#{matrizBean.resetInput()}" />
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

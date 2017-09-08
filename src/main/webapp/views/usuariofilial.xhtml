@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>UsuarioFilial</title>
+    </h:head>
+    <h:body>
+        <p:growl id="mensagem" />
+
+        <h:form id="formListUsuarioFilial">
+            <p:panel header="UsuarioFilial - Listagem">
+                <p:dataTable id="dtbUsuarioFilial" emptyMessage="Nenhum registro encontrado." paginator="true" value="#{usuarioFilialBean.usuarioFiliais}" var="usuarioFilial" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgUsuarioFilial').show();" actionListener="#{usuarioFilialBean.novo}" update=":formCadastroUsuarioFilial:pnlCadastroUsuarioFilial" />
+                    </f:facet>
+
+                    <p:column headerText="Matriz">
+                        <h:outputText value="#{usuarioFilial.matriz.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Filial">
+                        <h:outputText value="#{usuarioFilial.filial.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Usuario">
+                        <h:outputText value="#{usuarioFilial.usuario.nome}" />
+                    </p:column>
+
+                     <p:column headerText="Ações">   
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{usuarioFilialBean.excluir}"
+                                         update=":mensagem :formListUsuarioFilial:dtbUsuarioFilial">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{usuarioFilial}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil" actionListener="#{usuarioFilialBean.editar}"
+                                         update=":formCadastroUsuarioFilial:pnlCadastroUsuarioFilial" oncomplete="PF('dlgUsuarioFilial').show();">
+                            <f:attribute name="registroSelecionado" value="#{usuarioFilial}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+                
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="UsuarioFilial - Cadastro" widgetVar="dlgUsuarioFilial"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastroUsuarioFilial">
+                <h:panelGrid id="pnlCadastroUsuarioFilial" columns="2">
+
+                    <p:outputLabel for="mnuMatriz" value="Matriz:" />
+                    <p:selectOneMenu id="mnuMatriz" filter="true" required="true" requiredMessage="O campo 'MATRIZ' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{usuarioFilialBean.usuarioFilial.matriz}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma matriz" />
+                        <f:selectItems value="#{usuarioFilialBean.matrizes}" var="matriz"
+                                       itemValue="#{matriz}" itemLabel="#{matriz.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mnuFilial" value="Filial:" />
+                    <p:selectOneMenu id="mnuFilial" filter="true" required="true" requiredMessage="O campo 'FILIAL' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{usuarioFilialBean.usuarioFilial.filial}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma filial" />
+                        <f:selectItems value="#{usuarioFilialBean.filiais}" var="filial"
+                                       itemValue="#{filial}" itemLabel="#{filial.nome}" />
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel for="mnuUsuario" value="Usuario:" />
+                    <p:selectOneMenu id="mnuUsuario" filter="true" required="true" requiredMessage="O campo 'USUARIO' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{usuarioFilialBean.usuarioFilial.usuario}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione um Usuario" />
+                        <f:selectItems value="#{usuarioFilialBean.usuarios}" var="usuario"
+                                       itemValue="#{usuario}" itemLabel="#{usuario.nome}" />
+                    </p:selectOneMenu>
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{usuarioFilialBean.salvar()}"
+                                     update=":mensagem :formCadastroUsuarioFilial:pnlCadastroUsuarioFilial :formListUsuarioFilial:dtbUsuarioFilial"/>
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgUsuarioFilial').hide();" 
+                                     update="formCadastroUsuarioFilial:pnlCadastroUsuarioFilial" process="@this" actionListener="#{usuarioFilialBean.resetInput()}" />
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

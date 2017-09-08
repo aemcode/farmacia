@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Usuario</title>
+    </h:head>
+    <h:body>
+
+        <p:growl id="mensagem" />
+
+        <h:form id="formListUsuario">
+            <p:panel header="Usuario - Listagem">
+                <p:dataTable id="dtbUsuario" emptyMessage="Nenhum registro encontrado." paginator="true" value="#{usuarioBean.usuarios}" var="usuario" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgUsuario').show();" actionListener="#{usuarioBean.novo}" update=":formCadastroUsuario:pnlCadastroUsuario" />
+                    </f:facet>
+                    
+                 
+                    <p:column headerText="CodigoUsuario" sortBy="#{usuario.codUsuario}" filterBy="#{usuario.codUsuario}">
+                        <h:outputText value="#{usuario.codUsuario}" />
+                    </p:column>
+                    
+                    <p:column headerText="Nome" sortBy="#{usuario.nome}" filterBy="#{usuario.nome}">
+                        <h:outputText value="#{usuario.nome}" />
+                    </p:column>
+                    
+                    <p:column headerText="Email" sortBy="#{usuario.email}" filterBy="#{usuario.email}">
+                        <h:outputText value="#{usuario.email}" />
+                    </p:column>
+
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{usuario.tipoFormatado}" />
+                    </p:column>
+                    
+                    <p:column headerText="Ações">   
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{usuarioBean.excluir}"
+                                         update=":mensagem :formListUsuario:dtbUsuario">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{usuario}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil" actionListener="#{usuarioBean.editar}"
+                                         update=":formCadastroUsuario:pnlCadastroUsuario" oncomplete="PF('dlgUsuario').show();">
+                            <f:attribute name="registroSelecionado" value="#{usuario}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Usuario - Cadastro" widgetVar="dlgUsuario"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastroUsuario">
+                <h:panelGrid id="pnlCadastroUsuario" columns="2">
+                    
+                    <p:outputLabel for="txtCodUsuario" value="CodUsuario:" />
+                    <p:inputText id="txtCodUsuario" value="#{usuarioBean.usuario.codUsuario}" maxlength="40" size="30" 
+                                 required="true" requiredMessage="O campo 'CODUSUARIO' é obrigatório" />
+                    
+                    <p:outputLabel for="txtNome" value="Nome:" />
+                    <p:inputText id="txtNome" value="#{usuarioBean.usuario.nome}" maxlength="60" size="40" 
+                                 required="true" requiredMessage="O campo 'NOME' é obrigatório" />
+                    
+                    <p:outputLabel for="txtEmail" value="Email:" />
+                    <p:inputText id="txtEmail" value="#{usuarioBean.usuario.email}" maxlength="60" size="40" 
+                                 required="true" requiredMessage="O campo 'EMAIL' é obrigatório" />
+                    
+                    <h:outputLabel for="txtSenha" value="Senha: *" />
+                    <p:password id="txtSenha" value="#{usuarioBean.usuario.senha}" 
+                                required="true" requiredMessage="O campo SENHA é obrigatório." />
+                    
+                    <p:outputLabel for="rdoTipo" value="Tipo:" />
+                    <p:selectOneRadio id="rdoTipo" value="#{usuarioBean.usuario.tipo}">
+                        <f:selectItem itemValue="A" itemLabel="Administrador" />
+                        <f:selectItem itemValue="S" itemLabel="Suporte" />
+                        <f:selectItem itemValue="G" itemLabel="Gestor" />
+                        <f:selectItem itemValue="B" itemLabel="Balconista" />
+                    </p:selectOneRadio>
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{usuarioBean.salvar()}"
+                                     update=":mensagem :formCadastroUsuario:pnlCadastroUsuario :formListUsuario:dtbUsuario"/>
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgUsuario').hide();" 
+                                     update="formCadastroUsuario:pnlCadastroUsuario" process="@this" actionListener="#{usuarioBean.resetInput()}" />
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

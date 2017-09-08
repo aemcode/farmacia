@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://127.0.0.1:3306/farmacia?useTimezone=true&amp;serverTimezone=UTC</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">64eunumsey44</property>
+
+        <!-- Conexoes silmultaneas - JDBC connection pool (use the built-in) pool de conexõesx' -->
+        <property name="connection.pool_size">2</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+
+        <!-- Gerenciamento do contexto das sessões - Enable Hibernate's automatic 
+        session context management -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Cache de segundo nível - Disable the second-level cache -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+        <!-- Mostra os SQLs gerados - Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Cria as tabelas do banco de dados - Drop and re-create the database 
+        schema on startup -->
+        <!-- <property name="hbm2ddl.auto">create/update/validate</property> -->
+        <property name="hbm2ddl.auto">validate</property>
+
+        <!-- <mapping resource="org/hibernate/tutorial/domain/Event.hbm.xml"/> -->
+
+        <!-- Mapeamento das entidades -->
+        <mapping class="br.com.aemcode.farmacia.models.Cidade" />
+        <mapping class="br.com.aemcode.farmacia.models.Estado" />
+        <mapping class="br.com.aemcode.farmacia.models.Estoque" />
+        <mapping class="br.com.aemcode.farmacia.models.Filial" />
+        <mapping class="br.com.aemcode.farmacia.models.Funcionario" />
+        <mapping class="br.com.aemcode.farmacia.models.ItemVenda" />
+        <mapping class="br.com.aemcode.farmacia.models.Matriz" />
+        <mapping class="br.com.aemcode.farmacia.models.ParceiroNegocio" />
+        <mapping class="br.com.aemcode.farmacia.models.Pessoa" />
+        <mapping class="br.com.aemcode.farmacia.models.Produto" />
+        <mapping class="br.com.aemcode.farmacia.models.ProdutoCategoria" />
+        <mapping class="br.com.aemcode.farmacia.models.ProdutoTipo" />
+        <mapping class="br.com.aemcode.farmacia.models.ProdutoClassificacao" />
+        <mapping class="br.com.aemcode.farmacia.models.ProdutoClasse" />
+        <mapping class="br.com.aemcode.farmacia.models.Usuario" />
+        <mapping class="br.com.aemcode.farmacia.models.UsuarioFilial" />
+        <mapping class="br.com.aemcode.farmacia.models.Venda" />
+
+    </session-factory>
+
+</hibernate-configuration>

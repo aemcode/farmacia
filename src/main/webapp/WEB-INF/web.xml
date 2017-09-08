@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         id="WebApp_ID" version="3.1">
+
+    <!-- Nome da Aplicação -->
+    <display-name>Farmácia</display-name>
+
+    <!-- Estágio do projeto -->
+    <!-- Dois estágios: Desenvolvimento - mostra todos os tipos de erros Produção 
+    - Alguns erros são ocultados -->
+    <context-param> <!-- Serve para definir propriedades do projeto -->
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <!-- Tema do Primefaces -->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>cupertino</param-value>
+    </context-param>
+
+    <!-- Configuração do JSF -->
+    <!-- Servlets: Os servlets são a parte mais vital do projeto -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <listener>
+        <listener-class>br.com.aemcode.farmacia.util.HibernateContextOnOff</listener-class>
+    </listener>
+
+</web-app>

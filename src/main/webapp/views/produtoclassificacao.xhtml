@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Classificacao de Produtos</title>
+    </h:head>
+    <h:body>
+
+        <p:growl id="mensagem" />
+
+        <h:form id="formListProdutoClassificacao">
+            <p:panel header="Listagem de Classificacao de Produtos">
+                <p:dataTable id="dtbProdutoClassificacao" emptyMessage="Nenhum registro encontrado."
+                             paginator="true" value="#{produtoClassificacaoBean.produtoClassificacoes}" var="produtoClassificacao" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgProdutoClassificacao').show();" 
+                                         actionListener="#{produtoClassificacaoBean.novo}" update=":formCadastroProdutoClassificacao:pnlCadastroProdutoClassificacao" />
+                    </f:facet>
+
+                    <p:column headerText="Descricao" sortBy="#{produtoClassificacao.descricao}" filterBy="#{produtoClassificacao.descricao}">
+                        <h:outputText value="#{produtoClassificacao.descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{produtoClassificacaoBean.excluir}"
+                                         update=":mensagem :formListProdutoClassificacao:dtbProdutoClassificacao">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?"
+                                       icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{produtoClassificacao}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{produtoClassificacaoBean.editar}"
+                                         update=":formCadastroProdutoClassificacao:pnlCadastroProdutoClassificacao" oncomplete="PF('dlgProdutoClassificacao').show();">
+                            <f:attribute name="registroSelecionado" value="#{produtoClassificacao}" />
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Cadastro de Classificacao de Produtos" widgetVar="dlgProdutoClassificacao"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastroProdutoClassificacao">
+                <h:panelGrid id="pnlCadastroProdutoClassificacao" columns="2">
+                    <p:outputLabel for="txtDescricao" value="Descricao:" />
+                    <p:inputText id="txtDescricao" value="#{produtoClassificacaoBean.produtoClassificacao.descricao}" maxlength="30" size="20" 
+                                 required="true" requiredMessage="O campo DESCRICAO é obrigatório." />
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{produtoClassificacaoBean.salvar()}"
+                                     update=":mensagem :formCadastroProdutoClassificacao:pnlCadastroProdutoClassificacao :formListProdutoClassificacao:dtbProdutoClassificacao"/>
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgProdutoClassificacao').hide();" 
+                                     update="formCadastroProdutoClassificacao:pnlCadastroProdutoClassificacao" process="@this" actionListener="#{produtoClassificacaoBean.resetInput()}" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

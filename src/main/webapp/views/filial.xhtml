@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Filial</title>
+    </h:head>
+    <h:body>
+
+        <p:growl id="mensagem" />
+
+        <h:form id="formListFilial">
+            <p:panel header="Filial - Listagem">
+                <p:dataTable id="dtbFilial" emptyMessage="Nenhum registro encontrado." paginator="true" value="#{filialBean.filiais}" var="filial" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgFilial').show();" actionListener="#{filialBean.novo}" update=":formCadastroFilial:pnlCadastroFilial" />
+                    </f:facet>
+                    
+                    <p:column headerText="Matriz">
+                        <h:outputText value="#{filial.matriz.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Nome" sortBy="#{filial.nome}" filterBy="#{filial.nome}">
+                        <h:outputText value="#{filial.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Cnpj" sortBy="#{filial.cnpj}" filterBy="#{filial.cnpj}">
+                        <h:outputText value="#{filial.cnpj}" />
+                    </p:column>
+
+                    <p:column headerText="Rua">
+                        <h:outputText value="#{filial.rua}" />
+                    </p:column>
+
+                    <p:column headerText="Numero">
+                        <h:outputText value="#{filial.numero}" />
+                    </p:column>
+
+                    <p:column headerText="Complemento">
+                        <h:outputText value="#{filial.complemento}" />
+                    </p:column>
+
+                    <p:column headerText="Bairro">
+                        <h:outputText value="#{filial.bairro}" />
+                    </p:column>
+
+                    <p:column headerText="Cidade">
+                        <h:outputText value="#{filial.cidade.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Cep">
+                        <h:outputText value="#{filial.cep}" />
+                    </p:column>
+
+                    <p:column headerText="Telefone">
+                        <h:outputText value="#{filial.telefone}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">   
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{filialBean.excluir}"
+                                         update=":mensagem :formListFilial:dtbFilial">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{filial}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil" actionListener="#{filialBean.editar}"
+                                         update=":formCadastroFilial:pnlCadastroFilial" oncomplete="PF('dlgFilial').show();">
+                            <f:attribute name="registroSelecionado" value="#{filial}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Filial - Cadastro" widgetVar="dlgFilial"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastroFilial">
+                <h:panelGrid id="pnlCadastroFilial" columns="2">
+
+                    <p:outputLabel for="mnuMatriz" value="Matriz:" />
+                    <p:selectOneMenu id="mnuMatriz" filter="true" converter="omnifaces.SelectItemsConverter" value="#{filialBean.filial.matriz}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma matriz" />
+                        <f:selectItems value="#{filialBean.matrizes}" var="matriz"
+                                       itemValue="#{matriz}" itemLabel="#{matriz.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="txtNome" value="Nome:" />
+                    <p:inputText id="txtNome" value="#{filialBean.filial.nome}" maxlength="60" size="30" 
+                                 required="true" requiredMessage="O campo 'FILIAL' é obrigatório" />
+
+                    <p:outputLabel for="txtCnpj" value="Cnpj:" />
+                    <p:inputMask id="txtCnpj" value="#{filialBean.filial.cnpj}" mask="99.999.999/9999-99" maxlength="20" size="20" 
+                                 required="true" requiredMessage="O campo 'CNPJ' é obrigatório" />
+
+                    <p:outputLabel for="txtRua" value="Rua:" />
+                    <p:inputText id="txtRua" value="#{filialBean.filial.rua}" maxlength="80" size="60" 
+                                 required="true" requiredMessage="O campo 'RUA' é obrigatório" />
+                    
+                    <p:outputLabel for="intNumero" value="Numero:" />
+                    <p:inputMask id="intNumero" value="#{filialBean.filial.numero}" mask="9?9999" size="5"
+                                 required="true" requiredMessage="O campo 'NUMERO' é obrigatório" />
+
+                    <p:outputLabel for="txtComplemento" value="Complemento:" />
+                    <p:inputText id="txtComplemento" value="#{filialBean.filial.complemento}" maxlength="40" size="30" />
+
+                    <p:outputLabel for="txtBairro" value="Bairro:" />
+                    <p:inputText id="txtBairro" value="#{filialBean.filial.bairro}" maxlength="50" size="30" 
+                                 required="true" requiredMessage="O campo 'BAIRRO' é obrigatório" />
+
+                    <p:outputLabel for="mnuEstado" value="Estado:" />
+                    <p:selectOneMenu id="mnuEstado" filter="true" converter="omnifaces.SelectItemsConverter" value="#{filialBean.estado}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione um estado" />
+                        <f:selectItems value="#{filialBean.estados}" var="estado"
+                                       itemValue="#{estado}" itemLabel="#{estado.nome} - #{estado.sigla}" />
+                        <p:ajax listener="#{filialBean.fillFields}" update=":formCadastroFilial:mnuCidade" />
+                    </p:selectOneMenu>
+                   
+                    <p:outputLabel for="mnuCidade" value="Cidade:" />
+                    <p:selectOneMenu id="mnuCidade" filter="true" required="true" requiredMessage="O campo 'CIDADE' é obrigatório"
+                                     converter="omnifaces.SelectItemsConverter" value="#{filialBean.filial.cidade}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Selecione uma cidade" />
+                        <f:selectItems value="#{filialBean.cidades}" var="cidade"
+                                       itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="txtCep" value="Cep:" />
+                    <p:inputMask id="txtCep" value="#{filialBean.filial.cep}" mask="99999-999" size="10"
+                                 required="true" requiredMessage="O campo 'CEP' é obrigatório" />
+
+                    <p:outputLabel for="txtTelefone" value="Telefone:" />
+                    <p:inputMask id="txtTelefone" value="#{filialBean.filial.telefone}" mask="(99) 9999-9999" />
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{filialBean.salvar()}"
+                                     update=":mensagem :formCadastroFilial:pnlCadastroFilial :formListFilial:dtbFilial"/>
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgFilial').hide();" 
+                                     update="formCadastroFilial:pnlCadastroFilial" process="@this" actionListener="#{filialBean.resetInput()}" />
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

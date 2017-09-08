@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Classe de Produtos</title>
+    </h:head>
+    <h:body>
+
+        <p:growl id="mensagem" />
+
+        <h:form id="formListProdutoClasse">
+            <p:panel header="Listagem de Classe de Produtos">
+                <p:dataTable id="dtbProdutoClasse" emptyMessage="Nenhum registro encontrado."
+                             paginator="true" value="#{produtoClasseBean.produtoClasses}" var="produtoClasse" rows="5"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,25,30,35,40,45,50">
+
+                    <f:facet name="header">
+                        <p:commandButton value="Novo" oncomplete="PF('dlgProdutoClasse').show();" 
+                                         actionListener="#{produtoClasseBean.novo}" update=":formCadastroProdutoClasse:pnlCadastroProdutoClasse" />
+                    </f:facet>
+
+                    <p:column headerText="Descricao" sortBy="#{produtoClasse.descricao}" filterBy="#{produtoClasse.descricao}">
+                        <h:outputText value="#{produtoClasse.descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{produtoClasseBean.excluir}"
+                                         update=":mensagem :formListProdutoClasse:dtbProdutoClasse">
+                            <p:confirm header="Confirmação" message="Deseja excluir o registro?"
+                                       icon="ui-icon-alert" />
+                            <f:attribute name="registroSelecionado" value="#{produtoClasse}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{produtoClasseBean.editar}"
+                                         update=":formCadastroProdutoClasse:pnlCadastroProdutoClasse" oncomplete="PF('dlgProdutoClasse').show();">
+                            <f:attribute name="registroSelecionado" value="#{produtoClasse}" />
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </p:panel>
+        </h:form>
+
+        <p:dialog header="Cadastro de Classe de Produtos" widgetVar="dlgProdutoClasse"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastroProdutoClasse">
+                <h:panelGrid id="pnlCadastroProdutoClasse" columns="2">
+                    <p:outputLabel for="txtDescricao" value="Descricao:" />
+                    <p:inputText id="txtDescricao" value="#{produtoClasseBean.produtoClasse.descricao}" maxlength="30" size="20" 
+                                 required="true" requiredMessage="O campo DESCRICAO é obrigatório." />
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar" actionListener="#{produtoClasseBean.salvar()}"
+                                     update=":mensagem :formCadastroProdutoClasse:pnlCadastroProdutoClasse :formListProdutoClasse:dtbProdutoClasse"/>
+                    <p:commandButton value="Fechar" oncomplete="PF('dlgProdutoClasse').hide();" 
+                                     update="formCadastroProdutoClasse:pnlCadastroProdutoClasse" process="@this" actionListener="#{produtoClasseBean.resetInput()}" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>
